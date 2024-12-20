@@ -75,13 +75,7 @@ class App:
             dpg.add_text("1.0.0")
 
     def run(self):
-        logger.info("="*100 + "\n")
-        logger.info("Running application")
-
         while dpg.is_dearpygui_running():
             self.check_refresh()
             dpg.render_dearpygui_frame()
-
-        logger.info("Application closed")
-        logger.info("="*100 + "\n")
         dpg.destroy_context()
