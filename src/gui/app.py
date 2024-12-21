@@ -72,7 +72,7 @@ class App:
             dpg.add_spacer(width=5)
 
             dpg.add_text("Version: ")
-            dpg.add_text("1.0.0")
+            dpg.add_text("1.0.1")
 
     def run(self):
         while dpg.is_dearpygui_running():
