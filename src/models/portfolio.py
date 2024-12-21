@@ -83,18 +83,17 @@ class Portfolio:
                 [coin["id"] for coin in self.coins.values()]
             )
             coins = []
-            for name, data in self.coins.items():
+            for db_id, data in self.coins.items():
                 if data["id"] in current_prices:
-                    current_price = current_prices.get(data["id"], {}).get("quote", {}).get("USD", {}).get("price", 0)
-                    change_24h = current_prices.get(data["id"], {}).get("quote", {}).get("USD", {}).get("percent_change_24h", 0)
-                    volume_change_24h = current_prices.get(data["id"], {}).get("quote", {}).get("USD", {}).get("volume_change_24h", 0)
-                    coins.append(self._analyze_coin(name, data, current_price, change_24h, volume_change_24h))
+                    current_price = current_prices[data["id"]]["quote"]["USD"]["price"]
+                    coin_quote = current_prices[data["id"]]["quote"]["USD"]
+                    coins.append(self._analyze_coin(db_id, data, current_price, coin_quote))
             return coins
         except Exception as e:
             logger.error(f"Error fetching portfolio data: {e}")
             return []
 
-    def _analyze_coin(self, db_id: int, coin_data: Dict, current_price: float, change_24h: float, volume_change_24h: float) -> Dict:
+    def _analyze_coin(self, db_id: int, coin_data: Dict, current_price: float, coin_quote: Dict) -> Dict:
         avg_price = coin_data["avg_price"]
         amount = coin_data["amount"]
         targets = coin_data["targets"]
@@ -111,6 +110,22 @@ class Portfolio:
         )
         
         portfolio_percentage = (investment / total_investment * 100) if total_investment > 0 else 0
+
+        # Extract all change percentages
+        changes = {
+            "1h": coin_quote.get("percent_change_1h", 0),
+            "24h": coin_quote.get("percent_change_24h", 0),
+            "7d": coin_quote.get("percent_change_7d", 0),
+            "30d": coin_quote.get("percent_change_30d", 0),
+            "60d": coin_quote.get("percent_change_60d", 0),
+            "90d": coin_quote.get("percent_change_90d", 0)
+        }
+
+        # Extract volume data
+        volume = {
+            "24h": coin_quote.get("volume_24h", 0),
+            "change_24h": coin_quote.get("volume_change_24h", 0)
+        }
 
         target_analysis = [
             {
@@ -133,6 +148,6 @@ class Portfolio:
             "profit_percentage": profit_percentage,
             "portfolio_percentage": portfolio_percentage,
             "targets": target_analysis,
-            "percent_change_24h": change_24h,
-            "volume_change_24h": volume_change_24h
+            "changes": changes,
+            "volume": volume
         }

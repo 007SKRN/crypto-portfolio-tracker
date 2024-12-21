@@ -37,8 +37,8 @@ class PortfolioFrame:
                     "current_value": dpg.add_table_column(label=TableColumns.CURRENT_VALUE.label, width=TableColumns.CURRENT_VALUE.width),
                     "profit": dpg.add_table_column(label=TableColumns.PROFIT.label, width=TableColumns.PROFIT.width),
                     "portfolio_percentage": dpg.add_table_column(label=TableColumns.PORTFOLIO_PERCENTAGE.label, width=TableColumns.PORTFOLIO_PERCENTAGE.width),
-                    "percent_change_24h": dpg.add_table_column(label=TableColumns.PERCENT_CHANGE.label, width=TableColumns.PERCENT_CHANGE.width),
-                    "volume_change_24h": dpg.add_table_column(label=TableColumns.VOLUME_CHANGE.label, width=TableColumns.VOLUME_CHANGE.width),
+                    "changes": dpg.add_table_column(label=TableColumns.CHANGES.label, width=TableColumns.CHANGES.width),
+                    "volume": dpg.add_table_column(label=TableColumns.VOLUME.label, width=TableColumns.VOLUME.width),
                     "targets": dpg.add_table_column(label="Targets"),
                     "actions": dpg.add_table_column(label="Actions")
                 }
@@ -79,18 +79,26 @@ class PortfolioFrame:
 
                 dpg.add_text(TableColumns.PORTFOLIO_PERCENTAGE.format.format(coin_data['portfolio_percentage']))
                 
-                change_color = (0, 255, 0) if coin_data['percent_change_24h'] >= 0 else (255, 0, 0)
-                dpg.add_text(
-                    TableColumns.PERCENT_CHANGE.format.format(coin_data['percent_change_24h']),
-                    color=change_color
-                )
+                # Changes column
+                with dpg.group():
+                    periods = [("24h", "24H"), ("7d", "7D"), ("30d", "30D")]
+                    for period_key, period_label in periods:
+                        change = coin_data["changes"][period_key]
+                        change_color = (0, 255, 0) if change >= 0 else (255, 0, 0)
+                        dpg.add_text(
+                            f"{period_label}: {change:.2f}%",
+                            color=change_color
+                        )
                 
-                change_color = (0, 255, 0) if coin_data['volume_change_24h'] >= 0 else (255, 0, 0)
-                dpg.add_text(
-                    TableColumns.VOLUME_CHANGE.format.format(coin_data['volume_change_24h']),
-                    color=change_color
-                )
-                
+                # Volume column
+                with dpg.group():
+                    volume_change = coin_data["volume"]["change_24h"]
+                    volume_change_color = (0, 255, 0) if volume_change >= 0 else (255, 0, 0)
+                    dpg.add_text(
+                        f"{volume_change:.2f}%",
+                        color=volume_change_color
+                    )
+
                 with dpg.group():
                     for i, target in enumerate(coin_data["targets"], start=1):
                         target_price = target['price']
@@ -148,8 +156,8 @@ class PortfolioFrame:
             self.column_ids["current_value"]: lambda x: x["current_value"],
             self.column_ids["profit"]: lambda x: x["profit"],
             self.column_ids["portfolio_percentage"]: lambda x: x["portfolio_percentage"],
-            self.column_ids["percent_change_24h"]: lambda x: x["percent_change_24h"],
-            self.column_ids["volume_change_24h"]: lambda x: x["volume_change_24h"],
+            self.column_ids["changes"]: lambda x: x["changes"],
+            self.column_ids["volume"]: lambda x: x["volume"],
             self.column_ids["targets"]: lambda x: x["targets"],
         }
 

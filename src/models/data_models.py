@@ -12,8 +12,8 @@ class CoinData(TypedDict):
     profit_percentage: float
     portfolio_percentage: float
     targets: List[dict]
-    percent_change_24h: float
-    volume_change_24h: float
+    changes: dict
+    volume: dict
 
 @dataclass
 class ColumnConfig:
@@ -30,6 +30,6 @@ class TableColumns:
     CURRENT_VALUE = ColumnConfig("Current Value", "${:.2f}", 120)
     PROFIT = ColumnConfig("Profit/Loss", "{}", 100)
     PORTFOLIO_PERCENTAGE = ColumnConfig("Portfolio %", "{:.2f}%", 75)
-    PERCENT_CHANGE = ColumnConfig("24h Change", "{:.2f}%", 75)
-    VOLUME_CHANGE = ColumnConfig("24h Volume", "{:.2f}%", 75)
+    CHANGES = ColumnConfig("Changes", "{}", 150)
+    VOLUME = ColumnConfig("24H Volume", "{}", 150)
     TARGETS = ColumnConfig("Targets", "{}", 100)
