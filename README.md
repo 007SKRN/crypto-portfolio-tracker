@@ -2,6 +2,8 @@
 
 A personal simple crypto portfolio tracking application built with Python and DearPyGui. Keep tabs on your crypto investments, track profits, and set target prices - all in one interface.
 
+![Preview](screenshots/preview.png)
+
 [![Made with Python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
 [![GitHub stars](https://img.shields.io/github/stars/007SKRN/crypto-portfolio-tracker?style=social)](https://github.com/007SKRN/crypto-portfolio-tracker/stargazers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
