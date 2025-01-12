@@ -69,6 +69,26 @@ class Portfolio:
 
         logger.info(f"Coin removed: {coin.name if coin else db_id}")
 
+    def update_coin(self, db_id: int, name: str, coin_id: str, avg_price: float, amount: float, targets: List[float]) -> None:
+        coin = self.session.query(CoinModel).get(db_id)
+        if coin:
+            coin.name = name
+            coin.coin_id = coin_id
+            coin.avg_price = avg_price
+            coin.amount = amount
+            coin.targets = targets
+            self.session.commit()
+
+            self.coins[db_id] = {
+                "name": name,
+                "id": coin_id,
+                "avg_price": avg_price,
+                "amount": amount,
+                "targets": targets
+            }
+            
+            logger.info(f"Coin updated: {name} with ID {coin_id}, average price {avg_price}, amount {amount}, targets {targets}")
+
     def get_coin(self, db_id: int) -> Dict:
         if db_id not in self.coins:
             raise CoinNotFoundError(f"Coin with ID {db_id} not found in portfolio")

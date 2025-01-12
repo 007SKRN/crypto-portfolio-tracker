@@ -82,15 +82,8 @@ class EditCoinFrame:
             if targets_text:
                 targets = [float(t.strip()) for t in targets_text.split(",")]
 
-            self.portfolio.remove_coin(self.db_id)
-            self.portfolio.add_coin(
-                name,
-                coin_id,
-                avg_price,
-                amount,
-                targets
-            )
-            
+            self.portfolio.update_coin(self.db_id, name, coin_id, avg_price, amount, targets)
+
             self.refresh_callback()
             dpg.delete_item("edit_window")
         except ValueError as e:
